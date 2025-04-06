@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RupAI Financial Assistant</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 0;
+      margin: 0;
+      background-color: #F6DFD7;
+    }
+    .logo {
+      text-align: center;
+      background-color: #ffffff;
+      color: #333;
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .container {
+      max-width: 400px;
+      margin: 40px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .container h2 {
+      text-align: center;
+      color: #333;
+    }
+    .input-group {
+      margin: 15px 0;
+    }
+    input, textarea {
+      width: calc(100% - 22px);
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 5px;
+    }
+    textarea {
+      height: 100px;
+      resize: vertical;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      background-color: #ffffff;
+      color: #333;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-weight: bold;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .link {
+      display: block;
+      text-align: center;
+      margin-top: 10px;
+      color: #333;
+      cursor: pointer;
+    }
+    .hidden { display: none; }
+    
+    /* Dashboard Styles */
+    .main-title {
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      margin: 20px 0;
+      color: #333;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 800px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .card-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .stats-row {
+      margin: 10px 0;
+    }
+    .stats-label {
+      font-weight: bold;
+    }
+    .savings-streak {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .fire-emoji {
+      margin-right: 8px;
+      font-size: 20px;
+    }
+    .expense-form label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    .submit-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px;
+      width: auto;
+      display: inline-block;
+      margin-top: 20px;
+    }
+    .section-header {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 20px 0 15px 0;
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-around;
+      background-color: white;
+      padding: 10px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
+    .nav-item {
+      text-align: center;
+      padding: 5px 0;
+      width: 20%;
+    }
+    .nav-icon {
+      font-size: 20px;
+    }
+    .nav-text {
+      font-size: 12px;
+      margin-top: 5px;
+    }
+    .page-content {
+      margin-bottom: 70px; /* Space for navbar */
+    }
+    
+    /* Bar graph styles */
+    .graph-container {
+      margin: 20px 0;
+    }
+    .graph-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .bar-graph {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .bar-item {
+      display: flex;
+      align-items: center;
+    }
+    .bar-label {
+      width: 100px;
+      font-size: 12px;
+    }
+    .bar-outer {
+      flex-grow: 1;
+      height: 20px;
+      background-color: #f0f0f0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .bar-inner {
+      height: 100%;
+      background-color: #4CAF50;
+      border-radius: 10px;
+    }
+    .bar-value {
+      margin-left: 10px;
+      font-size: 12px;
+      font-weight: bold;
+      width: 70px;
+      text-align: right;
+    }
+    
+    /* Action buttons */
+    .action-btn {
+      background-color: #ffffff;
+      color: #333;
+      padding: 12px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      margin: 10px 0;
+      display: inline-block;
+      width: auto;
+    }
+    .action-btn-icon {
+      margin-right: 5px;
+    }
+    
+    /* Chatbot button */
+    .chatbot-button {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background-color: #4CAF50;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      cursor: pointer;
+      z-index: 100;
+    }
+    
+    /* Authentication links */
+    .auth-links {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .auth-link {
+      display: inline-block;
+      margin: 0 10px;
+      color: #333;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="main-title">RupAI</h1>
+  <img src="your-image.png", style="display: block; margin: 0 auto; width: 200px;">
+  <!-- Auth Links -->
+  <div class="auth-links">
+    <a class="auth-link" onclick="showPage('loginPage')">Login</a> | 
+    <a class="auth-link" onclick="showPage('signupPage')">Sign Up</a>
+  </div>
+
+  <div class="page-content">
+    <!-- Main Dashboard Page -->
+    <div id="dashboardPage">
+      <!-- Daily Stats Card -->
+      <div class="card">
+        <div class="card-title">Daily Stats</div>
+        
+        <div class="stats-row">
+          <span class="stats-label">Amount Spent Today:</span> ₹0
+        </div>
+        
+        <div class="stats-row">
+          <span class="stats-label">Estimated Saved:</span> ₹0
+        </div>
+        
+        <div class="stats-row">
+          <span class="stats-label">Last Purchase:</span> N/A
+        </div>
+        
+        <div class="stats-row savings-streak">
+          <span class="stats-label">Savings Streak:</span>
+          <span class="fire-emoji">🔥</span> 3 Days
+        </div>
+        
+        <!-- Bar Graph for spending by category -->
+        <div class="graph-container">
+          <div class="graph-title">Top Spending Categories</div>
+          <div class="bar-graph">
+            <div class="bar-item">
+              <div class="bar-label">Dining</div>
+              <div class="bar-outer">
+                <div class="bar-inner" style="width: 80%;"></div>
+              </div>
+              <div class="bar-value">₹4,000</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-label">Shopping</div>
+              <div class="bar-outer">
+                <div class="bar-inner" style="width: 60%;"></div>
+              </div>
+              <div class="bar-value">₹3,000</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-label">Transport</div>
+              <div class="bar-outer">
+                <div class="bar-inner" style="width: 40%;"></div>
+              </div>
+              <div class="bar-value">₹2,000</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-label">Utilities</div>
+              <div class="bar-outer">
+                <div class="bar-inner" style="width: 20%;"></div>
+              </div>
+              <div class="bar-value">₹1,000</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Find a Friend Button -->
+        <button class="action-btn" onclick="showPage('findFriendPage')">
+          <span class="action-btn-icon">👥</span> Find a Friend
+        </button>
+      </div>
+
+      <!-- Log New Expense Card -->
+      <div class="card">
+        <div class="card-title">Log New Expense</div>
+        
+        <form id="expenseForm">
+          <label for="category">Category</label>
+          <input type="text" id="category" placeholder="e.g. Food Delivery">
+          
+          <label for="amount">Amount</label>
+          <input type="number" id="amount" placeholder="₹">
+          
+          <label for="mood">Your Mood</label>
+          <input type="text" id="mood" placeholder="e.g. Stressed">
+          
+          <label for="reason">Reason</label>
+          <textarea id="reason" placeholder="Why did you spend?"></textarea>
+          
+          <button type="submit" class="submit-btn">Submit Expense</button>
+        </form>
+      </div>
+
+      <!-- Spending Insights Card -->
+      <div class="card">
+        <div class="card-title">Spending Insights</div>
+        <p>Your spending data will appear here once you start logging expenses.</p>
+      </div>
+    </div>
+    
+    <!-- Login Page -->
+    <div id="loginPage" class="hidden">
+      <div class="card">
+        <div class="card-title">Login</div>
+        <div class="input-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="Enter your email">
+        </div>
+        <div class="input-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter your password">
+        </div>
+        <button onclick="login()">Login</button>
+        <p class="link" onclick="showPage('forgotPasswordPage')">Forgot Password?</p>
+        <p class="link" onclick="showPage('dashboardPage')">Back to Dashboard</p>
+      </div>
+    </div>
+    
+    <!-- Signup Page -->
+    <div id="signupPage" class="hidden">
+      <div class="card">
+        <div class="card-title">Sign Up</div>
+        <div class="input-group">
+          <label for="signupName">Full Name</label>
+          <input type="text" id="signupName" placeholder="Enter your name">
+        </div>
+        <div class="input-group">
+          <label for="signupEmail">Email</label>
+          <input type="email" id="signupEmail" placeholder="Enter your email">
+        </div>
+        <div class="input-group">
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" placeholder="Create a password">
+        </div>
+        <button onclick="signup()">Sign Up</button>
+        <p class="link" onclick="showPage('dashboardPage')">Back to Dashboard</p>
+      </div>
+    </div>
+    
+    <!-- Find a Friend Page -->
+    <div id="findFriendPage" class="hidden">
+      <div class="card">
+        <div class="card-title">Find a Friend</div>
+        <p>Connect with friends to compare savings and motivate each other!</p>
+        
+        <div class="input-group">
+          <label for="searchFriend">Search by Name or Email</label>
+          <input type="text" id="searchFriend" placeholder="Search...">
+        </div>
+        
+        <div style="margin-top: 20px;">
+          <h3>Suggested Friends</h3>
+          <div style="border-bottom: 1px solid #eee; padding: 10px 0;">
+            <div style="font-weight: bold;">Priya Sharma</div>
+            <div style="font-size: 14px; color: #666;">Savings Streak: 5 days</div>
+            <button class="action-btn" style="margin-top: 5px; padding: 8px;">+ Add</button>
+          </div>
+          <div style="border-bottom: 1px solid #eee; padding: 10px 0;">
+            <div style="font-weight: bold;">Rahul Verma</div>
+            <div style="font-size: 14px; color: #666;">Savings Streak: 7 days</div>
+            <button class="action-btn" style="margin-top: 5px; padding: 8px;">+ Add</button>
+          </div>
+          <div style="padding: 10px 0;">
+            <div style="font-weight: bold;">Aisha Khan</div>
+            <div style="font-size: 14px; color: #666;">Savings Streak: 3 days</div>
+            <button class="action-btn" style="margin-top: 5px; padding: 8px;">+ Add</button>
+          </div>
+        </div>
+        
+        <button class="action-btn" style="margin-top: 20px;" onclick="showPage('dashboardPage')">
+          Back to Dashboard
+        </button>
+      </div>
+    </div>
+    
+    <!-- Edit Goals Page -->
+    <div id="editGoalsPage" class="hidden">
+      <div class="card">
+        <div class="card-title">Edit Financial Goals</div>
+        
+        <div class="input-group">
+          <label for="monthlySavingsGoal">Monthly Savings Goal (₹)</label>
+          <input type="number" id="monthlySavingsGoal" placeholder="e.g. 5000">
+        </div>
+        
+        <div class="input-group">
+          <label for="dailySpendingLimit">Daily Spending Limit (₹)</label>
+          <input type="number" id="dailySpendingLimit" placeholder="e.g. 500">
+        </div>
+        
+        <div class="input-group">
+          <label for="savingsTarget">Savings Target (₹)</label>
+          <input type="number" id="savingsTarget" placeholder="e.g. 100000">
+        </div>
+        
+        <div class="input-group">
+          <label for="targetDate">Target Date</label>
+          <input type="date" id="targetDate">
+        </div>
+        
+        <button class="submit-btn" onclick="saveGoals()">Save Goals</button>
+        <button class="action-btn" style="margin-top: 10px;" onclick="showPage('dashboardPage')">
+          Cancel
+        </button>
+      </div>
+    </div>
+    
+    <!-- Chatbot Page -->
+    <div id="chatbotPage" class="hidden">
+      <div class="card">
+        <div class="card-title">AI Financial Assistant</div>
+        
+        <div style="height: 300px; border: 1px solid #eee; padding: 10px; border-radius: 8px; overflow-y: auto; margin-bottom: 10px;">
+          <div style="background-color: #f0f0f0; padding: 8px; border-radius: 8px; margin-bottom: 8px; max-width: 80%;">
+            Hi there! I'm your RupAI assistant. How can I help you with your finances today?
+          </div>
+        </div>
+        
+        <div style="display: flex;">
+          <input type="text" placeholder="Ask a question..." style="flex-grow: 1; margin-right: 10px;">
+          <button style="width: auto; padding: 10px 15px;">Send</button>
+        </div>
+        
+        <button class="action-btn" style="margin-top: 20px;" onclick="showPage('dashboardPage')">
+          Close Chat
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chatbot Button -->
+  <div class="chatbot-button" onclick="showPage('chatbotPage')">💬</div>
+
+  <!-- Navigation Bar -->
+  <div class="navbar">
+    <div class="nav-item" onclick="showPage('dashboardPage')">
+      <div class="nav-icon">📊</div>
+      <div class="nav-text">Dashboard</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">📝</div>
+      <div class="nav-text">Expenses</div>
+    </div>
+    <div class="nav-item" onclick="showPage('editGoalsPage')">
+      <div class="nav-icon">🎯</div>
+      <div class="nav-text">Goals</div>
+    </div>
+    <div class="nav-item" onclick="showPage('findFriendPage')">
+      <div class="nav-icon">👥</div>
+      <div class="nav-text">Friends</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">👤</div>
+      <div class="nav-text">Profile</div>
+    </div>
+  </div>
+
+  <script>
+    // Show specified page and hide others
+    function showPage(pageId) {
+      const pages = ['dashboardPage', 'loginPage', 'signupPage', 'findFriendPage', 'editGoalsPage', 'chatbotPage'];
+      pages.forEach(page => {
+        document.getElementById(page).classList.add('hidden');
+      });
+      document.getElementById(pageId).classList.remove('hidden');
+    }
+    
+    // Handle expense form submission
+    document.getElementById('expenseForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const category = document.getElementById('category').value;
+      const amount = document.getElementById('amount').value;
+      const mood = document.getElementById('mood').value;
+      const reason = document.getElementById('reason').value;
+      
+      if (!category || !amount) {
+        alert('Please fill in at least the category and amount');
+        return;
+      }
+      
+      // In a real app, this would send data to a server
+      alert('Expense logged successfully!');
+      
+      // Reset form
+      this.reset();
+    });
+    
+    // Login function
+    function login() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      
+      if (!email || !password) {
+        alert('Please enter both email and password');
+        return;
+      }
+      
+      // In a real app, this would authenticate with a server
+      alert('Login successful!');
+      showPage('dashboardPage');
+    }
+    
+    // Signup function
+    function signup() {
+      const name = document.getElementById('signupName').value;
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
+      
+      if (!name || !email || !password) {
+        alert('Please fill in all fields');
+        return;
+      }
+      
+      // In a real app, this would register with a server
+      alert('Account created successfully!');
+      showPage('dashboardPage');
+    }
+    
+    // Save goals function
+    function saveGoals() {
+      const monthlySavings = document.getElementById('monthlySavingsGoal').value;
+      const dailyLimit = document.getElementById('dailySpendingLimit').value;
+      const savingsTarget = document.getElementById('savingsTarget').value;
+      const targetDate = document.getElementById('targetDate').value;
+      
+      if (!monthlySavings || !dailyLimit || !savingsTarget || !targetDate) {
+        alert('Please fill in all goals fields');
+        return;
+      }
+      
+      // In a real app, this would save to a server
+      alert('Financial goals saved successfully!');
+      showPage('dashboardPage');
+    }
+  </script>
+</body>
+</html>
